@@ -4,6 +4,7 @@
 #include <GyverBME280.h>
 #include <MHZ19.h>
 
+#include "const.h"
 #include "hardware.h"
 
 #include "device/pms.h"
@@ -53,7 +54,10 @@ void setup() {
     Serial.println("Begin");
 
     oled.begin();
+    oled.set_contrast(OLED_CONTRAST_DEFAULT);
+
     tft.begin();
+    tft.set_contrast(TFT_CONTRAST_DEFAULT);
 
     Wire.begin();
     bme.begin(BME_ADDRESS);
