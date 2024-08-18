@@ -6,6 +6,11 @@ Air Quality monitor for ESP32
 
 <img width="887" alt="image" src="https://github.com/user-attachments/assets/04f780c2-2373-4a84-981a-415270994d5e">
 
+<img width="868" alt="image" src="https://github.com/user-attachments/assets/7c8fe11f-f467-487e-a4e9-d680bf2d9a22">
+
+<img width="430" alt="image" src="https://github.com/user-attachments/assets/321c2131-4625-4528-ac73-f0c5bce21910">
+
+
 Project: [EasyEDA Pro](https://github.com/user-attachments/files/16648917/ProProject_AirQu_ESP32_2024-07-24.epro.zip)
 
 ## Hardware:
