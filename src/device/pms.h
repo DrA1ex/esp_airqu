@@ -2,9 +2,7 @@
 
 #include "Arduino.h"
 
-struct PmsData {
-    uint16_t pm10_env, pm25_env, pm100_env;
-};
+#include "data.h"
 
 class PmsDevice {
     PmsData _data;

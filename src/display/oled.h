@@ -47,11 +47,11 @@ void OledDisplay<Type, Buffer>::update(const SensorData &data) {
     _oled.setScale(1);
 
     _oled.print("PM: ");
-    _oled.print(data.pm10);
+    _oled.print(data.pms.pm10_env);
     _oled.print(" - ");
-    _oled.print(data.pm25 - data.pm10);
+    _oled.print(data.pms.pm25_env - data.pms.pm10_env);
     _oled.print(" - ");
-    _oled.print(data.pm100 - data.pm25);
+    _oled.print(data.pms.pm100_env - data.pms.pm25_env);
 
     _oled.update();
 }

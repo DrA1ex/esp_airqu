@@ -1,6 +1,6 @@
 #pragma once
 
-#define PMS_FAN_DEFAULT                         (50u)
+#define PMS_FAN_DEFAULT                         (512u)
 #define TFT_CONTRAST_DEFAULT                    (256u)
 #define OLED_CONTRAST_DEFAULT                   (32u)
 

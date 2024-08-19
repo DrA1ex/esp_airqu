@@ -49,15 +49,19 @@ void setup() {
     WiFi.mode(WIFI_OFF);
     delay(1);
 
-    analogWrite(FAN_PWM_PIN, 512);
+    analogWrite(FAN_PWM_PIN, PMS_FAN_DEFAULT);
 
     Serial.println("Begin");
 
+#ifdef OLED_ENABLED
     oled.begin();
     oled.set_contrast(OLED_CONTRAST_DEFAULT);
+#endif
 
+#ifdef TFT_ENABLED
     tft.begin();
     tft.set_contrast(TFT_CONTRAST_DEFAULT);
+#endif
 
     Wire.begin();
     bme.begin(BME_ADDRESS);
@@ -94,16 +98,18 @@ void loop() {
 
     Serial.println("Reading PM...");
     if (pmsDevice.read()) {
-        sensorData.pm10 = pmsDevice.data().pm10_env;
-        sensorData.pm25 = pmsDevice.data().pm25_env;
-        sensorData.pm100 = pmsDevice.data().pm100_env;
+        sensorData.pms = pmsDevice.data();
     }
 
+#ifdef OLED_ENABLED
     oled.update(sensorData);
     Serial.println("OLED done");
+#endif
 
+#ifdef TFT_ENABLED
     tft.update(sensorData);
     Serial.println("TFT done");
+#endif
 
     delay(3000);
 }

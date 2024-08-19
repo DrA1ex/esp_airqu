@@ -60,11 +60,11 @@ void TftDisplay::_draw_page(const SensorData &sensorData) {
             break;
 
         case 3:
-            _draw_value(convert_value(sensorData.pm10), "PM1.0");
+            _draw_value(convert_value(sensorData.pms.pm10_env), "PM1.0");
             break;
 
         case 4:
-            _draw_value(convert_value(sensorData.pm25 - sensorData.pm10), "PM2.5");
+            _draw_value(convert_value(sensorData.pms.pm25_env - sensorData.pms.pm10_env), "PM2.5");
             break;
     }
 }
