@@ -49,7 +49,9 @@ void setup() {
     WiFi.mode(WIFI_OFF);
     delay(1);
 
-    analogWrite(FAN_PWM_PIN, PMS_FAN_DEFAULT);
+    analogWriteResolution(PWM_BITS);
+    analogWriteFrequency(PWM_FREQ);
+    analogWrite(FAN_PWM_PIN, std::min(FAN_SPEED_DEFAULT, PWM_MAX_VALUE));
 
     Serial.println("Begin");
 

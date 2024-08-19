@@ -8,6 +8,7 @@
 #include "../fonts/custom_font.h"
 #include "../fonts/LineramaBold_10pt.h"
 
+#include "const.h"
 #include "data.h"
 
 #define SMB_DEGREE '<'
@@ -45,5 +46,5 @@ public:
 
     void update(const SensorData &data);
 
-    inline void set_contrast(uint16_t value) { analogWrite(_led_pin, value); };
+    inline void set_contrast(uint16_t value) { analogWrite(_led_pin, std::min(value, PWM_MAX_VALUE)); };
 };

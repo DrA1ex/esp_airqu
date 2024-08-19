@@ -13,7 +13,7 @@ public:
 
     void update(const SensorData &data);
 
-    inline void set_contrast(uint8_t value) { _oled.setContrast(value); };
+    inline void set_contrast(uint16_t value) { _oled.setContrast((int) std::min(value, PWM_MAX_VALUE) * 255 / PWM_MAX_VALUE); };
 };
 
 template<int Type, int Buffer>

@@ -13,7 +13,7 @@ void TftDisplay::begin() {
     _tft.fillScreen(ST77XX_BLACK);
 
     pinMode(_led_pin, OUTPUT);
-    analogWrite(_led_pin, 256);
+    set_contrast(TFT_CONTRAST_DEFAULT);
 
     _tft.println("Loading...");
 }
