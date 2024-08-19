@@ -28,7 +28,7 @@ Project: [EasyEDA Pro](https://github.com/user-attachments/files/16648917/ProPro
 
 ## Installation
 
-Install (Platform.IO)[https://platformio.org/install] first and then:
+Install [Platform.IO](https://platformio.org/install) first and then:
 
 ```bash
 git clone https://github.com/DrA1ex/airqu-esp32.git
