@@ -24,7 +24,7 @@ Project: [EasyEDA Pro](https://github.com/user-attachments/files/16648917/ProPro
 | OLED Display     | Any SSD1306     |   I2C         |
 | TFT Display      | Any ST7735      |   SPI         |
 | Buttons          | Any             |               |
-| Fan              | Any 12V 2.5mm   |               |
+| Fan              | Any 12V 40mm    |               |
 
 ## Installation
 
