@@ -1,4 +1,4 @@
-# airqu-esp32
+# esp-airqu
 Air Quality monitor for ESP32
 
 
