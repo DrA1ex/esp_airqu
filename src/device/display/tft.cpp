@@ -63,6 +63,9 @@ void TftDisplay::_draw_page(const SensorData &sensorData) {
 
         case 4:
             _draw_value(convert_value(sensorData.pms.pm25_env - sensorData.pms.pm10_env), "PM2.5");
+
+        case 5:
+            _draw_value(convert_value(sensorData.pms.pm100_env - sensorData.pms.pm25_env), "PM10");
             break;
     }
 }
@@ -103,4 +106,3 @@ void TftDisplay::update(const SensorData &data) {
 
     if (++page >= page_count) page = 0;
 }
-

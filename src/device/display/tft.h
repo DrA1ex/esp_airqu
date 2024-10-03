@@ -21,7 +21,7 @@ class TftDisplay {
 
     uint8_t _led_pin;
 
-    const uint16_t page_count = 5;
+    const uint16_t page_count = 6;
 
     const uint16_t header_circle_r = 3;
     const uint16_t header_circle_m = 2;
