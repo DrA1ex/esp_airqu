@@ -126,7 +126,6 @@ portability-simd-intrinsics,
 readability-avoid-const-params-in-decls,
 readability-const-return-type,
 readability-container-size-empty,
-readability-convert-member-functions-to-static,
 readability-delete-null-pointer,
 readability-deleted-default,
 readability-inconsistent-declaration-parameter-name,
@@ -141,7 +140,6 @@ readability-redundant-smartptr-get,
 readability-redundant-string-cstr,
 readability-redundant-string-init,
 readability-simplify-subscript-expr,
-readability-static-accessed-through-instance,
 readability-static-definition-in-anonymous-namespace,
 readability-string-compare,
 readability-uniqueptr-delete-release,
@@ -167,6 +165,5 @@ CheckOptions:
   readability-identifier-naming.PublicMemberCase: lower_case
   readability-identifier-naming.ProtectedMemberCase: lower_case
   readability-identifier-naming.PrivateMemberCase: lower_case
-  readability-identifier-naming.ClassMemberPrefix:
   readability-identifier-naming.PrivateMemberPrefix: _
   readability-identifier-naming.PrivateMethodPrefix: _

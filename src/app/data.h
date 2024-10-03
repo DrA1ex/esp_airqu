@@ -3,7 +3,9 @@
 #include <cstdint>
 
 struct PmsData {
-    uint16_t pm10_env, pm25_env, pm100_env;
+    uint16_t pm10_env;
+    uint16_t pm25_env;
+    uint16_t pm100_env;
 };
 
 struct SensorData {

@@ -1,9 +1,7 @@
 #include "tft.h"
 
 TftDisplay::TftDisplay(uint8_t tft_bus, uint8_t cs_pin, uint8_t dc_pin, uint8_t rst_pin, uint8_t led_pin) :
-        _spi(tft_bus), _tft(&_spi, cs_pin, dc_pin, rst_pin), _led_pin(led_pin) {
-
-}
+    _spi(tft_bus), _tft(&_spi, cs_pin, dc_pin, rst_pin), _led_pin(led_pin) {}
 void TftDisplay::begin() {
     _tft.initR(INITR_BLACKTAB);
 
@@ -80,7 +78,7 @@ void TftDisplay::_draw_value(String value, String label) {
     _tft.getTextBounds(value, 0, 0, &x1, &y1, &w, &h);
 
     int16_t x = 160 / 2 - w / 2,
-            y = 128 / 2 + header_y + header_circle_r * 2 - h / 2;
+        y = 128 / 2 + header_y + header_circle_r * 2 - h / 2;
 
     _tft.setCursor(x, y);
     _tft.println(value);
@@ -105,3 +103,4 @@ void TftDisplay::update(const SensorData &data) {
 
     if (++page >= page_count) page = 0;
 }
+

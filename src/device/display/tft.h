@@ -8,8 +8,8 @@
 #include "../fonts/custom_font.h"
 #include "../fonts/LineramaBold_10pt.h"
 
-#include "const.h"
-#include "data.h"
+#include "constants.h"
+#include "app/data.h"
 
 #define SMB_DEGREE '<'
 #define SMB_PERCENT ';'
@@ -46,5 +46,5 @@ public:
 
     void update(const SensorData &data);
 
-    inline void set_contrast(uint16_t value) { analogWrite(_led_pin, std::min(value, PWM_MAX_VALUE)); };
+    inline void set_contrast(uint16_t value) {analogWrite(_led_pin, std::min(value, PWM_MAX_VALUE));}
 };

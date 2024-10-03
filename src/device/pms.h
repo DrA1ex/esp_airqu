@@ -1,8 +1,9 @@
-#include <cstdint>
+#pragma once
 
-#include "Arduino.h"
+#include <Arduino.h>
+#include <lib/debug.h>
 
-#include "data.h"
+#include "app/data.h"
 
 class PmsDevice {
     PmsData _data;

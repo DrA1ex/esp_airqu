@@ -2,7 +2,8 @@
 
 #include <GyverOLED.h>
 
-#include "data.h"
+#include "app/data.h"
+#include "sys_constants.h"
 
 template<int Type, int Buffer = OLED_BUFFER>
 class OledDisplay {

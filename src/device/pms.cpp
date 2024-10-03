@@ -24,20 +24,20 @@ bool PmsDevice::_refresh_data() {
     PmsDataPacket data{};
 
     if (!_stream.available()) {
-        Serial.println("PM: no data");
+        D_PRINT("PM: no data");
         return false;
     }
 
     // Read a byte at a time until we get to the special '0x42' start-byte
     if (_stream.peek() != 0x42) {
         _stream.read();
-        Serial.println("PM: bad header");
+        D_PRINT("PM: bad header");
         return false;
     }
 
     // Now read all 32 bytes
     if (_stream.available() < 32) {
-        Serial.println("PM: not enough data");
+        D_PRINT("PM: not enough data");
         return false;
     }
 
@@ -50,34 +50,23 @@ bool PmsDevice::_refresh_data() {
         sum += buffer[i];
     }
 
-    /* debugging
-    for (uint8_t i=2; i<32; i++) {
-      Serial.print("0x"); Serial.print(buffer[i], HEX); Serial.print(", ");
-    }
-    Serial.println();
-    */
+    D_WRITE("PM: read data ")
+        VERBOSE(D_PRINT_HEX(buffer, sizeof(buffer)));
 
     // The data comes in endian'd, this solves it, so it works on all platforms
     uint16_t buffer_u16[15];
     for (uint8_t i = 0; i < 15; i++) {
         buffer_u16[i] = buffer[2 + i * 2 + 1];
-        buffer_u16[i] += (buffer[2 + i * 2] << 8);
+        buffer_u16[i] += buffer[2 + i * 2] << 8;
     }
 
     // put it into a nice struct :)
-    memcpy((void *) &data, (void *) buffer_u16, 30);
+    memcpy(&data, buffer_u16, 30);
 
-    Serial.print("PM: ");
-    Serial.print(data.pm10_env);
-    Serial.print(" / ");
-    Serial.print(data.pm25_env);
-    Serial.print(" / ");
-    Serial.print(data.pm100_env);
-    Serial.print(" Checksum: ");
-    Serial.println(data.checksum);
+    D_PRINTF("PM: Parsed data: %i / %i / %i Checksum: 0x%0.4x\r\n", data.pm10_env, data.pm25_env, data.pm100_env, data.checksum);
 
     if (sum != data.checksum) {
-        Serial.println("Checksum failure");
+        D_PRINT("PM: Checksum failure");
         return false;
     }
 
