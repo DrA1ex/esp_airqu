@@ -1,5 +1,5 @@
-import * as CommonUtils from "./lib/utils/common.js"
 import {PacketType} from "./config.js";
+import {PWM_MAX_VALUE} from "./sys_constants.js";
 
 /**
  * @type {PropertiesConfig}
@@ -29,8 +29,17 @@ export const Properties = [{
         {key: "sensor_data.pms.pm25_env", type: "label", kind: "Uint16", cmd: PacketType.PM_25, transform: (value) => ['PM 2.5', value]},
         {key: "sensor_data.pms.pm100_env", type: "label", kind: "Uint16", cmd: PacketType.PM_100, transform: (value) => ['PM 10.0', value]},
     ]
-},{
+}, {
+    key: "general", section:"General", props: [
+        {key: "power", title: "Power", type: "trigger", kind: "Boolean", cmd: PacketType.POWER},
+        {key: "brightness", title: "Brightness", type: "wheel", kind: "Uint16", limit: PWM_MAX_VALUE, cmd: PacketType.BRIGHTNESS},
+        {key: "fan_speed", title: "Fan Speed", type: "wheel", kind: "Uint16", limit: PWM_MAX_VALUE, cmd: PacketType.FAN_SPEED, visibleIf: "hardware_config.fan_enabled"},
+    ]
+}, {
     key: "sys_config", section: "Settings", collapse: "true", props: [
+        {type: "title", label: "Hardware"},
+        {key: "hardware_config.fan_enabled", title: "Fan enabled", type: "trigger", kind: "Boolean", cmd: PacketType.HARDWARE_FAN_ENABLED},
+
         {type: "title", label: "mDNS"},
         {key: "sys_config.mdns_name", title: "Name", type: "text", kind: "FixedString", cmd: PacketType.SYS_CONFIG_MDNS_NAME, maxLength: 32},
 

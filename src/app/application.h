@@ -36,9 +36,14 @@ public:
 
     inline void restart() { _bootstrap->restart(); }
 
+    uint16_t display_brightness() const { return config().power ? config().brightness : 0; }
+
 private:
     void _setup();
+
     void _update_data();
     void _redraw_data();
     void _send_notifications();
+
+    void _process_notifications(void *sender, const AbstractParameter *p);
 };

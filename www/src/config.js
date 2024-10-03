@@ -4,6 +4,10 @@ export const DEFAULT_ADDRESS = "esp_airqu.local";
 export const CONFIG_STRING_SIZE = 32;
 
 export const PacketType = {
+    POWER: 0x00,
+    BRIGHTNESS: 0x01,
+    FAN_SPEED: 0x02,
+
     CO2: 0x20,
     TEMPERATURE: 0x21,
     HUMIDITY: 0x22,
@@ -26,6 +30,8 @@ export const PacketType = {
     SYS_CONFIG_MQTT_PASSWORD: 0x74,
     SYS_CONFIG_MQTT_CONVERT_BRIGHTNESS: 0x75,
 
+    HARDWARE_FAN_ENABLED: 0x80,
+
     GET_SENSOR_DATA: 0xa0,
 }
 
@@ -33,9 +39,12 @@ const CfgStrLength = 32;
 
 export class Config extends AppConfigBase {
     power;
-    sys_config;
+    brightness;
+    fan_speed;
 
+    sys_config;
     sensor_data;
+    hardware_config;
 
     constructor(props) {
         super(props);
@@ -56,7 +65,12 @@ export class Config extends AppConfigBase {
     }
 
     parse(parser) {
+        this.power = parser.readBoolean();
+        this.brightness = parser.readUint16();
+        this.fan_speed = parser.readUint16();
+
         this.sys_config = this.#parseSysConfig(parser);
+        this.hardware_config = this.#parseHardwareConfig(parser);
     }
 
     #parseSysConfig(parser) {
@@ -89,5 +103,11 @@ export class Config extends AppConfigBase {
                 pm100_env: parser.readUint16(),
             }
         };
+    }
+
+    #parseHardwareConfig(parser) {
+        return {
+            fan_enabled: parser.readBoolean()
+        }
     }
 }

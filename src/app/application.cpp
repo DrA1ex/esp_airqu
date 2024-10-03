@@ -1,5 +1,7 @@
 #include "application.h"
 
+#include <esp32-hal-ledc.h>
+
 void Application::begin() {
     D_PRINT("Starting application...");
 
@@ -25,18 +27,22 @@ void Application::begin() {
 
     _metadata = std::make_unique<ConfigMetadata>(build_metadata(config(), _sensor_data));
 
-    analogWrite(FAN_PWM_PIN, std::min(FAN_SPEED_DEFAULT, PWM_MAX_VALUE));
+    if (config().hardware_config.fan_enabled) {
+        ledcAttachPin(FAN_PWM_PIN, FAN_CHANNEL);
+        ledcChangeFrequency(1, std::min<uint32_t>(FAN_FREQUENCY, PWM_MAX_FREQUENCY), PWM_RESOLUTION);
+        ledcWrite(FAN_CHANNEL, std::min(config().fan_speed, PWM_MAX_VALUE));
+    }
 
     if constexpr (OLED_ENABLED) {
         _oled_display = std::make_unique<OledDisplay<OLED_TYPE>>();
         _oled_display->begin();
-        _oled_display->set_contrast(OLED_CONTRAST_DEFAULT);
+        _oled_display->set_contrast(display_brightness());
     }
 
     if constexpr (TFT_ENABLED) {
         _tft_display = std::make_unique<TftDisplay>(SPI_TFT, TFT_CS, TFT_DC, TFT_RST, TFT_LED);
         _tft_display->begin();
-        _tft_display->set_contrast(TFT_CONTRAST_DEFAULT);
+        _tft_display->set_contrast(display_brightness());
     }
 
     Wire.begin();
@@ -85,16 +91,20 @@ void Application::_setup() {
     ws_server->register_command((PacketType) SystemPacketTypeEnum::RESTART, [this] { _bootstrap->restart(); });
 
     _bootstrap->timer().add_interval([this](auto) {
-        _update_data();
+        if (config().power) _update_data();
     }, DISPLAY_UPDATE_TIMEOUT_DEFAULT);
 
     _bootstrap->timer().add_interval([this](auto) {
-        _redraw_data();
+        if (config().power) _redraw_data();
     }, SENSOR_UPDATE_TIMEOUT_DEFAULT);
 
     _bootstrap->timer().add_interval([this](auto) {
-        _send_notifications();
+        if (config().power) _send_notifications();
     }, SENSOR_DATA_SEND_TIMEOUT_DEFAULT);
+
+    NotificationBus::get().subscribe([this](auto *sender, auto *prop) {
+        _process_notifications(sender, prop);
+    });
 }
 
 void Application::event_loop() {
@@ -136,4 +146,26 @@ void Application::_send_notifications() {
     bus.notify_parameter_changed(this, _metadata->sensor_data.pms.pm10_env);
     bus.notify_parameter_changed(this, _metadata->sensor_data.pms.pm25_env);
     bus.notify_parameter_changed(this, _metadata->sensor_data.pms.pm100_env);
+}
+
+void Application::_process_notifications(void *sender, const AbstractParameter *prop) {
+    if (sender == this) return;
+
+    if (prop == _metadata->power) {
+        if constexpr (OLED_ENABLED) _oled_display->set_contrast(display_brightness());
+        if constexpr (TFT_ENABLED) _tft_display->set_contrast(display_brightness());
+
+        uint16_t fan_speed = config().power ? std::min(config().fan_speed, PWM_MAX_VALUE) : 0;
+        if (config().hardware_config.fan_enabled) ledcWrite(FAN_CHANNEL, fan_speed);
+
+        if (config().power) _send_notifications();
+    } else if (prop == _metadata->brightness && config().power) {
+        if constexpr (OLED_ENABLED) _oled_display->set_contrast(config().brightness);
+        if constexpr (TFT_ENABLED) _tft_display->set_contrast(config().brightness);
+        if (config().hardware_config.fan_enabled) ledcWrite(FAN_CHANNEL, 0);
+    } else if (prop == _metadata->fan_speed && config().hardware_config.fan_enabled) {
+        ledcWrite(FAN_CHANNEL, std::min(config().fan_speed, PWM_MAX_VALUE));
+    }
+
+    _bootstrap->save_changes();
 }

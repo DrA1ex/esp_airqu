@@ -27,6 +27,10 @@ DECLARE_META(PmsDataMeta, AppMetaProperty,
     MEMBER(Parameter<uint16_t>, pm100_env),
 )
 
+DECLARE_META(HardwareMeta, AppMetaProperty,
+    MEMBER(Parameter<bool>, fan_enabled),
+)
+
 DECLARE_META(SensorDataMeta, AppMetaProperty,
     MEMBER(Parameter<uint32_t>, co2),
     MEMBER(Parameter<float>, temperature),
@@ -41,7 +45,12 @@ DECLARE_META(DataConfigMeta, AppMetaProperty,
 )
 
 DECLARE_META(ConfigMetadata, AppMetaProperty,
+    MEMBER(Parameter<bool>, power),
+    MEMBER(Parameter<uint16_t>, brightness),
+    MEMBER(Parameter<uint16_t>, fan_speed),
+
     SUB_TYPE(SysConfigMeta, sys_config),
+    SUB_TYPE(HardwareMeta, hardware_config),
 
     SUB_TYPE(SensorDataMeta, sensor_data),
     SUB_TYPE(DataConfigMeta, data),
@@ -49,6 +58,22 @@ DECLARE_META(ConfigMetadata, AppMetaProperty,
 
 inline ConfigMetadata build_metadata(Config &config, SensorData &sensor_data) {
     return {
+        .power = {
+            PacketType::POWER,
+            MQTT_TOPIC_POWER, MQTT_OUT_TOPIC_POWER,
+            &config.power,
+        },
+        .brightness = {
+            PacketType::BRIGHTNESS,
+            MQTT_TOPIC_BRIGHTNESS, MQTT_OUT_TOPIC_BRIGHTNESS,
+            &config.brightness,
+        },
+        .fan_speed = {
+            PacketType::FAN_SPEED,
+            MQTT_TOPIC_FAN_SPEED, MQTT_OUT_TOPIC_FAN_SPEED,
+            &config.fan_speed,
+        },
+
         .sys_config = {
             .mdns_name = {
                 PacketType::SYS_CONFIG_MDNS_NAME,
@@ -90,6 +115,13 @@ inline ConfigMetadata build_metadata(Config &config, SensorData &sensor_data) {
                 PacketType::SYS_CONFIG_MQTT_PASSWORD,
                 {config.sys_config.mqtt_password, CONFIG_STRING_SIZE}
             },
+        },
+
+        .hardware_config{
+            .fan_enabled = {
+                PacketType::HARDWARE_FAN_ENABLED,
+                &config.hardware_config.fan_enabled
+            }
         },
 
         .sensor_data{

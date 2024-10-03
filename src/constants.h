@@ -17,8 +17,7 @@
 #define MDNS_NAME                               "esp_airqu"
 
 #define FAN_SPEED_DEFAULT                       uint16_t(128)
-#define TFT_CONTRAST_DEFAULT                    uint16_t(96)
-#define OLED_CONTRAST_DEFAULT                   uint16_t(32)
+#define DISPLAY_CONTRAST_DEFAULT                uint16_t(32)
 
 #define DISPLAY_UPDATE_TIMEOUT_DEFAULT          (3000)
 #define SENSOR_UPDATE_TIMEOUT_DEFAULT           (3000)
@@ -31,8 +30,14 @@
 
 
 #define MQTT_PREFIX                             ""
+#define MQTT_TOPIC_POWER                        MQTT_PREFIX "/power"
+#define MQTT_TOPIC_BRIGHTNESS                   MQTT_PREFIX "/brightness"
+#define MQTT_TOPIC_FAN_SPEED                    MQTT_PREFIX "/fan_speed"
 
 #define MQTT_OUT_PREFIX                         MQTT_PREFIX "/out"
+#define MQTT_OUT_TOPIC_POWER                    MQTT_OUT_PREFIX "/power"
+#define MQTT_OUT_TOPIC_BRIGHTNESS               MQTT_OUT_PREFIX "/brightness"
+#define MQTT_OUT_TOPIC_FAN_SPEED                MQTT_OUT_PREFIX "/fan_speed"
 #define MQTT_OUT_TOPIC_CO2                      MQTT_OUT_PREFIX "/co2"
 #define MQTT_OUT_TOPIC_TEMPERATURE              MQTT_OUT_PREFIX "/temperature"
 #define MQTT_OUT_TOPIC_HUMIDITY                 MQTT_OUT_PREFIX "/humidity"

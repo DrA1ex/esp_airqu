@@ -7,6 +7,10 @@
 #include "constants.h"
 
 MAKE_ENUM(PacketType, uint8_t,
+    POWER, 0x00,
+    BRIGHTNESS, 0x01,
+    FAN_SPEED, 0x02,
+
     CO2, 0x20,
     TEMPERATURE, 0x21,
     HUMIDITY, 0x22,
@@ -29,10 +33,16 @@ MAKE_ENUM(PacketType, uint8_t,
     SYS_CONFIG_MQTT_PASSWORD, 0x74,
     SYS_CONFIG_MQTT_CONVERT_BRIGHTNESS, 0x75,
 
+    HARDWARE_FAN_ENABLED, 0x80,
+
     GET_SENSOR_DATA, 0xa0,
 )
 
 typedef char ConfigString[CONFIG_STRING_SIZE];
+
+struct __attribute ((packed)) HardwareConfig {
+    bool fan_enabled = FAN_ENABLED;
+};
 
 struct __attribute ((packed)) SysConfig {
     ConfigString mdns_name{MDNS_NAME};
@@ -50,5 +60,10 @@ struct __attribute ((packed)) SysConfig {
 };
 
 struct __attribute ((packed)) Config {
+    bool power = true;
+    uint16_t brightness = DISPLAY_CONTRAST_DEFAULT;
+    uint16_t fan_speed = FAN_SPEED_DEFAULT;
+
     SysConfig sys_config{};
+    HardwareConfig hardware_config{};
 };

@@ -7,6 +7,8 @@
 
 #define TFT_ENABLED                (1)
 
+#define FAN_ENABLED                (1)
+
 #define BME_ADDRESS                (0x76)
 
 #define UART_PMS                   (1)
