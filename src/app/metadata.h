@@ -28,7 +28,7 @@ DECLARE_META(PmsDataMeta, AppMetaProperty,
 )
 
 DECLARE_META(SensorDataMeta, AppMetaProperty,
-    MEMBER(Parameter<int>, co2),
+    MEMBER(Parameter<uint32_t>, co2),
     MEMBER(Parameter<float>, temperature),
     MEMBER(Parameter<float>, humidity),
 

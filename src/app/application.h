@@ -39,4 +39,6 @@ public:
 private:
     void _setup();
     void _update_data();
+    void _redraw_data();
+    void _send_notifications();
 };

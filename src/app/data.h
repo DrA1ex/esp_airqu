@@ -9,7 +9,7 @@ struct PmsData {
 };
 
 struct SensorData {
-    int co2;
+    uint32_t co2;
 
     float temperature;
     float humidity;

@@ -20,18 +20,15 @@
 #define TFT_CONTRAST_DEFAULT                    uint16_t(96)
 #define OLED_CONTRAST_DEFAULT                   uint16_t(32)
 
-
-#define POWER_CHANGE_TIMEOUT                    (1000u)                // Timeout for power change animation
-#define WIFI_CONNECT_FLASH_TIMEOUT              (3000u)
-
-#define TIME_ZONE                               (5.f)                   // GMT +5:00
+#define DISPLAY_UPDATE_TIMEOUT_DEFAULT          (3000)
+#define SENSOR_UPDATE_TIMEOUT_DEFAULT           (3000)
+#define SENSOR_DATA_SEND_TIMEOUT_DEFAULT        (15000)
 
 #define MQTT                                    (0)                     // Enable MQTT server
 
 #define MQTT_CONNECTION_TIMEOUT                 (15000u)                // Connection attempt timeout to MQTT server
 #define MQTT_RECONNECT_TIMEOUT                  (5000u)                 // Time before new reconnection attempt to MQTT server
 
-#define MQTT_CONVERT_BRIGHTNESS                 (0u)                    // Convert brightness from internal range to [0..100]
 
 #define MQTT_PREFIX                             ""
 

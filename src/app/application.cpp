@@ -58,10 +58,6 @@ void Application::begin() {
 }
 
 void Application::_setup() {
-    _bootstrap->timer().add_interval([this](auto) {
-        _update_data();
-    }, 3000);
-
     auto &ws_server = _bootstrap->ws_server();
     auto &mqtt_server = _bootstrap->mqtt_server();
 
@@ -87,6 +83,18 @@ void Application::_setup() {
 
     ws_server->register_data_request((PacketType) SystemPacketTypeEnum::GET_CONFIG, _metadata->data.config);
     ws_server->register_command((PacketType) SystemPacketTypeEnum::RESTART, [this] { _bootstrap->restart(); });
+
+    _bootstrap->timer().add_interval([this](auto) {
+        _update_data();
+    }, DISPLAY_UPDATE_TIMEOUT_DEFAULT);
+
+    _bootstrap->timer().add_interval([this](auto) {
+        _redraw_data();
+    }, SENSOR_UPDATE_TIMEOUT_DEFAULT);
+
+    _bootstrap->timer().add_interval([this](auto) {
+        _send_notifications();
+    }, SENSOR_DATA_SEND_TIMEOUT_DEFAULT);
 }
 
 void Application::event_loop() {
@@ -107,7 +115,9 @@ void Application::_update_data() {
     if (_pms_device->read()) {
         _sensor_data.pms = _pms_device->data();
     }
+}
 
+void Application::_redraw_data() {
     if constexpr (OLED_ENABLED) {
         _oled_display->update(_sensor_data);
     }
@@ -115,4 +125,15 @@ void Application::_update_data() {
     if constexpr (TFT_ENABLED) {
         _tft_display->update(_sensor_data);
     }
+}
+
+void Application::_send_notifications() {
+    auto &bus = NotificationBus::get();
+
+    bus.notify_parameter_changed(this, _metadata->sensor_data.co2);
+    bus.notify_parameter_changed(this, _metadata->sensor_data.temperature);
+    bus.notify_parameter_changed(this, _metadata->sensor_data.humidity);
+    bus.notify_parameter_changed(this, _metadata->sensor_data.pms.pm10_env);
+    bus.notify_parameter_changed(this, _metadata->sensor_data.pms.pm25_env);
+    bus.notify_parameter_changed(this, _metadata->sensor_data.pms.pm100_env);
 }

@@ -15,12 +15,12 @@ export const Properties = [{
             }
         },
         {
-            key: "sensor_data.temperature", type: "label", kind: "Uint32", cmd: PacketType.TEMPERATURE,
+            key: "sensor_data.temperature", type: "label", kind: "Float32", cmd: PacketType.TEMPERATURE,
             transform: (value) => {
                 return ['Temperature', `${value.toFixed(1)} Cº`];
             }
         }, {
-            key: "sensor_data.humidity", type: "label", kind: "Uint32", cmd: PacketType.HUMIDITY,
+            key: "sensor_data.humidity", type: "label", kind: "Float32", cmd: PacketType.HUMIDITY,
             transform: (value) => {
                 return ['Humidity', `${value.toFixed(1)} %`];
             }
