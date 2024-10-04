@@ -50,8 +50,8 @@ bool PmsDevice::_refresh_data() {
         sum += buffer[i];
     }
 
-    D_WRITE("PM: read data ")
-        VERBOSE(D_PRINT_HEX(buffer, sizeof(buffer)));
+    VERBOSE(D_WRITE("PM: read data "));
+    VERBOSE(D_PRINT_HEX(buffer, sizeof(buffer)));
 
     // The data comes in endian'd, this solves it, so it works on all platforms
     uint16_t buffer_u16[15];
