@@ -162,8 +162,7 @@ void Application::_process_notifications(void *sender, const AbstractParameter *
     } else if (prop == _metadata->brightness && config().power) {
         if constexpr (OLED_ENABLED) _oled_display->set_contrast(config().brightness);
         if constexpr (TFT_ENABLED) _tft_display->set_contrast(config().brightness);
-        if (config().hardware_config.fan_enabled) ledcWrite(FAN_CHANNEL, 0);
-    } else if (prop == _metadata->fan_speed && config().hardware_config.fan_enabled) {
+    } else if (prop == _metadata->fan_speed && config().hardware_config.fan_enabled && config().power) {
         ledcWrite(FAN_CHANNEL, std::min(config().fan_speed, PWM_MAX_VALUE));
     }
 
