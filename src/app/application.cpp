@@ -115,16 +115,59 @@ void Application::_update_data() {
     _sensor_data.humidity = _bme->readHumidity();
     _sensor_data.temperature = _bme->readTemperature();
 
-    D_PRINTF("Humidity: %.2f\r\n", _sensor_data.humidity);
-    D_PRINTF("Temperature: %.2f\r\n", _sensor_data.temperature);
+    if (_sensor_data.humidity > 0) {
+        if (_sensor_data.humidity >= 40 && _sensor_data.humidity <= 60) {
+            _sensor_data.state.humidity = SensorState::GOOD;
+        } else if (_sensor_data.humidity >= 30 && _sensor_data.humidity <= 70) {
+            _sensor_data.state.humidity = SensorState::WARNING;
+        } else {
+            _sensor_data.state.humidity = SensorState::CRITICAL;
+        }
+    } else {
+        _sensor_data.state.humidity = SensorState::NOT_READY;
+    }
+
+
+    if (_sensor_data.temperature != 0) {
+        if (_sensor_data.state.humidity == SensorState::GOOD) {
+            _sensor_data.state.temperature = (_sensor_data.temperature >= 20 && _sensor_data.temperature <= 22)
+                                             ? SensorState::GOOD : SensorState::WARNING;
+        } else if (_sensor_data.state.humidity == SensorState::WARNING) {
+            _sensor_data.state.temperature = (_sensor_data.temperature >= 18 && _sensor_data.temperature <= 24)
+                                             ? SensorState::GOOD : SensorState::WARNING;
+        } else {
+            _sensor_data.state.temperature = (_sensor_data.temperature >= 21 && _sensor_data.temperature <= 24)
+                                             ? SensorState::GOOD : SensorState::WARNING;
+        }
+    }
+
+    D_PRINTF("Humidity: %.2f / %s\r\n", _sensor_data.humidity, __debug_enum_str(_sensor_data.state.humidity));
+    D_PRINTF("Temperature: %.2f / %s\r\n", _sensor_data.temperature, __debug_enum_str(_sensor_data.state.temperature));
 
     _sensor_data.co2 = _mhz19->getCO2(false);
+    if (_mhz19->errorCode == ERRORCODE::RESULT_OK) {
+        if (_sensor_data.co2 <= 1000) _sensor_data.state.co2 = SensorState::GOOD;
+        else if (_sensor_data.co2 <= 1500) _sensor_data.state.co2 = SensorState::WARNING;
+        else _sensor_data.state.co2 = SensorState::CRITICAL;
+    } else {
+        _sensor_data.state.co2 = SensorState::NOT_READY;
+    }
 
-    D_PRINTF("CO2: %i\r\n", _sensor_data.co2);
+    D_PRINTF("CO2: %i / %s\r\n", _sensor_data.co2, __debug_enum_str(_sensor_data.state.co2));
 
     if (_pms_device->read()) {
         _sensor_data.pms = _pms_device->data();
+
+        if (_sensor_data.pms.pm25_env <= 12 && _sensor_data.pms.pm10_env <= 20 && _sensor_data.pms.pm100_env <= 150) {
+            _sensor_data.state.pms = SensorState::GOOD;
+        } else if (_sensor_data.pms.pm25_env <= 35 && _sensor_data.pms.pm10_env <= 50 && _sensor_data.pms.pm100_env <= 300) {
+            _sensor_data.state.pms = SensorState::WARNING;
+        } else {
+            _sensor_data.state.pms = SensorState::CRITICAL;
+        }
     }
+
+    D_PRINTF("PMS State: %s\r\n", __debug_enum_str(_sensor_data.state.pms));
 }
 
 void Application::_redraw_data() {
@@ -140,12 +183,23 @@ void Application::_redraw_data() {
 void Application::_send_notifications() {
     auto &bus = NotificationBus::get();
 
-    bus.notify_parameter_changed(this, _metadata->sensor_data.co2);
-    bus.notify_parameter_changed(this, _metadata->sensor_data.temperature);
-    bus.notify_parameter_changed(this, _metadata->sensor_data.humidity);
-    bus.notify_parameter_changed(this, _metadata->sensor_data.pms.pm10_env);
-    bus.notify_parameter_changed(this, _metadata->sensor_data.pms.pm25_env);
-    bus.notify_parameter_changed(this, _metadata->sensor_data.pms.pm100_env);
+    if (_sensor_data.state.co2 != SensorState::NOT_READY) {
+        bus.notify_parameter_changed(this, _metadata->sensor_data.co2);
+    }
+
+    if (_sensor_data.state.temperature != SensorState::NOT_READY) {
+        bus.notify_parameter_changed(this, _metadata->sensor_data.temperature);
+    }
+
+    if (_sensor_data.state.humidity != SensorState::NOT_READY) {
+        bus.notify_parameter_changed(this, _metadata->sensor_data.humidity);
+    }
+
+    if (_sensor_data.state.pms != SensorState::NOT_READY) {
+        bus.notify_parameter_changed(this, _metadata->sensor_data.pms.pm10_env);
+        bus.notify_parameter_changed(this, _metadata->sensor_data.pms.pm25_env);
+        bus.notify_parameter_changed(this, _metadata->sensor_data.pms.pm100_env);
+    }
 }
 
 void Application::_process_notifications(void *sender, const AbstractParameter *prop) {

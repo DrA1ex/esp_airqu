@@ -30,5 +30,5 @@
 #define CONFIG_STRING_SIZE                      (32u)
 
 
-#define FAN_FREQUENCY                           (60)
+#define FAN_FREQUENCY                           (40000)
 #define FAN_CHANNEL                             (1)

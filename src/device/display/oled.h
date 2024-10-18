@@ -32,27 +32,43 @@ void OledDisplay<Type, Buffer>::update(const SensorData &data) {
     _oled.setCursor(0, 1);
     _oled.setScale(1);
 
-    _oled.print(String(data.temperature, 1));
-    _oled.print(" C ");
+    if (data.state.temperature != SensorState::NOT_READY) {
+        _oled.print(String(data.temperature, 1));
+        _oled.print(" C ");
+    } else {
+        _oled.print("N/A");
+    }
 
-    _oled.print(String(data.humidity, 1));
-    _oled.print("%");
+    if (data.state.humidity != SensorState::NOT_READY) {
+        _oled.print(String(data.humidity, 1));
+        _oled.print("%");
+    } else {
+        _oled.print("N/A");
+    }
 
     _oled.setCursor(0, 3);
     _oled.setScale(2);
 
-    _oled.print(data.co2);
-    _oled.print(" ppm");
+    if (data.state.co2 != SensorState::NOT_READY) {
+        _oled.print(data.co2);
+        _oled.print(" ppm");
+    } else {
+        _oled.print("N/A");
+    }
 
     _oled.setCursor(0, 6);
     _oled.setScale(1);
 
     _oled.print("PM: ");
-    _oled.print(data.pms.pm10_env);
-    _oled.print(" - ");
-    _oled.print(data.pms.pm25_env - data.pms.pm10_env);
-    _oled.print(" - ");
-    _oled.print(data.pms.pm100_env - data.pms.pm25_env);
+    if (data.state.pms != SensorState::NOT_READY) {
+        _oled.print(data.pms.pm10_env);
+        _oled.print(" - ");
+        _oled.print(data.pms.pm25_env - data.pms.pm10_env);
+        _oled.print(" - ");
+        _oled.print(data.pms.pm100_env - data.pms.pm25_env);
+    } else {
+        _oled.print("N/A");
+    }
 
     _oled.update();
 }

@@ -63,14 +63,14 @@ bool PmsDevice::_refresh_data() {
     // put it into a nice struct :)
     memcpy(&data, buffer_u16, 30);
 
-    D_PRINTF("PM: Parsed data: %i / %i / %i Checksum: 0x%0.4x\r\n", data.pm10_env, data.pm25_env, data.pm100_env, data.checksum);
-
     if (sum != data.checksum) {
         D_PRINT("PM: Checksum failure");
         return false;
     }
 
     // Success
+
+    D_PRINTF("PM: Parsed data: %i / %i / %i\r\n", data.pm10_env, data.pm25_env, data.pm100_env);
 
     _data.pm10_env = data.pm10_env;
     _data.pm25_env = data.pm25_env;

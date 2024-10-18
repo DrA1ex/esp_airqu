@@ -19,13 +19,13 @@ void TftDisplay::_draw_header() {
     _tft.setTextWrap(false);
     _tft.fillScreen(ST77XX_BLACK);
 
-    for (int i = 0; i < page_count; ++i) {
-        auto x = header_offset + i * (header_circle_r * 2 + header_circle_m);
+    for (int i = 0; i < _page_count; ++i) {
+        int16_t x = _header_offset + i * (_header_circle_r * 2 + _header_circle_m);
 
-        if (i == page) {
-            _tft.fillCircle(x, header_y, header_circle_r, header_color);
+        if (i == _page) {
+            _tft.fillCircle(x, _header_y, (int16_t) _header_circle_r, _header_color);
         } else {
-            _tft.drawCircle(x, header_y, header_circle_r, header_color);
+            _tft.drawCircle(x, _header_y, (int16_t) _header_circle_r, _header_color);
         }
     }
 }
@@ -42,35 +42,69 @@ String convert_value(T value) {
     return String(value);
 }
 
-void TftDisplay::_draw_page(const SensorData &sensorData) {
-    switch (page) {
+void TftDisplay::_draw_page(const SensorData &sensor_data) {
+    String value = "000";
+    SensorState state = SensorState::NOT_READY;
+    String label;
+
+    switch (_page) {
         case 0:
-            _draw_value(convert_value(sensorData.co2), "CO2");
+            label = "CO2";
+            state = sensor_data.state.co2;
+            if (state != SensorState::NOT_READY) {
+                value = convert_value(sensor_data.co2);
+            }
             break;
 
         case 1:
-            _draw_value(convert_value(sensorData.temperature, 1) + SMB_DEGREE, "TEMP");
+            label = "TEMP";
+            state = sensor_data.state.temperature;
+            if (state != SensorState::NOT_READY) {
+                value = convert_value(sensor_data.temperature, 1) + SMB_DEGREE;
+            }
             break;
 
         case 2:
-            _draw_value(convert_value(sensorData.humidity, 1) + SMB_PERCENT, "HUM");
+            label = "HUM";
+            state = sensor_data.state.humidity;
+            if (state != SensorState::NOT_READY) {
+                value = convert_value(sensor_data.humidity, 1) + SMB_PERCENT;
+            }
             break;
 
         case 3:
-            _draw_value(convert_value(sensorData.pms.pm10_env), "PM1.0");
+            label = "PM1.0";
+            state = sensor_data.state.pms;
+            if (state != SensorState::NOT_READY) {
+                value = convert_value(sensor_data.pms.pm10_env);
+            }
             break;
 
         case 4:
-            _draw_value(convert_value(sensorData.pms.pm25_env - sensorData.pms.pm10_env), "PM2.5");
+            label = "PM2.5";
+            state = sensor_data.state.pms;
+            if (state != SensorState::NOT_READY) {
+                value = convert_value(sensor_data.pms.pm25_env - sensor_data.pms.pm10_env);
+            }
             break;
 
         case 5:
-            _draw_value(convert_value(sensorData.pms.pm100_env - sensorData.pms.pm25_env), "PM10");
+            label = "PM10";
+            state = sensor_data.state.pms;
+            if (state != SensorState::NOT_READY) {
+                value = convert_value(sensor_data.pms.pm100_env - sensor_data.pms.pm25_env);
+            }
             break;
+
+        default:
+            return;
     }
+
+    _draw_value(value, label);
+    _draw_state(state);
 }
 
-void TftDisplay::_draw_value(String value, String label) {
+void TftDisplay::_draw_value(const String &value, const String &label) {
     _tft.setFont(&custom_font);
     _tft.setTextSize(1);
     _tft.setTextColor(ST77XX_WHITE);
@@ -80,8 +114,8 @@ void TftDisplay::_draw_value(String value, String label) {
 
     _tft.getTextBounds(value, 0, 0, &x1, &y1, &w, &h);
 
-    int16_t x = 160 / 2 - w / 2,
-        y = 128 / 2 + header_y + header_circle_r * 2 - h / 2;
+    int16_t x = TFT_WIDTH / 2 - w / 2;
+    int16_t y = TFT_HEIGHT / 2 + _header_y + _header_circle_r * 2 - h / 2;
 
     _tft.setCursor(x, y);
     _tft.println(value);
@@ -93,16 +127,38 @@ void TftDisplay::_draw_value(String value, String label) {
 
     _tft.getTextBounds(label, 0, 0, &x1, &y1, &w, &h);
 
-    _tft.setTextColor(header_color);
-    _tft.setCursor(160 / 2 - w / 2, y + h / 2);
+    _tft.setTextColor(_header_color);
+    _tft.setCursor(TFT_WIDTH / 2 - w / 2, y + h / 2);
     _tft.print(label);
 
     _tft.setFont();
+}
+
+void TftDisplay::_draw_state(SensorState state) {
+    uint16_t color;
+    switch (state) {
+        case SensorState::CRITICAL:
+            color = 0xd0a3;
+            break;
+
+        case SensorState::WARNING:
+            color = 0xec84;
+            break;
+
+        case SensorState::GOOD:
+            color = 0x2e25;
+            break;
+
+        default:
+            return;
+    }
+
+    _tft.fillRoundRect(_state_x, _state_y, _state_width, _state_height, _state_roundness, color);
 }
 
 void TftDisplay::update(const SensorData &data) {
     _draw_header();
     _draw_page(data);
 
-    if (++page >= page_count) page = 0;
+    if (++_page >= _page_count) _page = 0;
 }
