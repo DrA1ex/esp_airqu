@@ -84,7 +84,7 @@ void TftDisplay::_draw_page(const SensorData &sensor_data) {
             label = "PM2.5";
             state = sensor_data.state.pms;
             if (state != SensorState::NOT_READY) {
-                value = convert_value(sensor_data.pms.pm25_env - sensor_data.pms.pm10_env);
+                value = convert_value(sensor_data.pms.pm25_env);
             }
             break;
 
@@ -92,7 +92,7 @@ void TftDisplay::_draw_page(const SensorData &sensor_data) {
             label = "PM10";
             state = sensor_data.state.pms;
             if (state != SensorState::NOT_READY) {
-                value = convert_value(sensor_data.pms.pm100_env - sensor_data.pms.pm25_env);
+                value = convert_value(sensor_data.pms.pm100_env);
             }
             break;
 

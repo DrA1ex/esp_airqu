@@ -131,13 +131,13 @@ void Application::_update_data() {
     if (_sensor_data.temperature != 0) {
         if (_sensor_data.state.humidity == SensorState::GOOD) {
             _sensor_data.state.temperature = (_sensor_data.temperature >= 20 && _sensor_data.temperature <= 22)
-                                             ? SensorState::GOOD : SensorState::WARNING;
+                                                 ? SensorState::GOOD : SensorState::WARNING;
         } else if (_sensor_data.state.humidity == SensorState::WARNING) {
             _sensor_data.state.temperature = (_sensor_data.temperature >= 18 && _sensor_data.temperature <= 24)
-                                             ? SensorState::GOOD : SensorState::WARNING;
+                                                 ? SensorState::GOOD : SensorState::WARNING;
         } else {
             _sensor_data.state.temperature = (_sensor_data.temperature >= 21 && _sensor_data.temperature <= 24)
-                                             ? SensorState::GOOD : SensorState::WARNING;
+                                                 ? SensorState::GOOD : SensorState::WARNING;
         }
     }
 
@@ -158,9 +158,9 @@ void Application::_update_data() {
     if (_pms_device->read()) {
         _sensor_data.pms = _pms_device->data();
 
-        if (_sensor_data.pms.pm25_env <= 12 && _sensor_data.pms.pm10_env <= 20 && _sensor_data.pms.pm100_env <= 150) {
+        if (_sensor_data.pms.pm10_env <= 6 && _sensor_data.pms.pm25_env <= 12 && _sensor_data.pms.pm100_env <= 100) {
             _sensor_data.state.pms = SensorState::GOOD;
-        } else if (_sensor_data.pms.pm25_env <= 35 && _sensor_data.pms.pm10_env <= 50 && _sensor_data.pms.pm100_env <= 300) {
+        } else if (_sensor_data.pms.pm10_env <= 17 && _sensor_data.pms.pm25_env <= 35 && _sensor_data.pms.pm100_env <= 175) {
             _sensor_data.state.pms = SensorState::WARNING;
         } else {
             _sensor_data.state.pms = SensorState::CRITICAL;

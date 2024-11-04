@@ -9,7 +9,7 @@ struct PmsDataPacket {
     uint16_t checksum;
 };
 
-PmsDevice::PmsDevice(uint8_t uart) : _data{}, _stream(uart) {}
+PmsDevice::PmsDevice(uint8_t uart) : _data {}, _stream(uart) {}
 
 bool PmsDevice::read() {
     bool success = _refresh_data();
@@ -20,8 +20,9 @@ bool PmsDevice::read() {
 
     return success;
 }
+
 bool PmsDevice::_refresh_data() {
-    PmsDataPacket data{};
+    PmsDataPacket data {};
 
     if (!_stream.available()) {
         D_PRINT("PM: no data");
@@ -73,8 +74,8 @@ bool PmsDevice::_refresh_data() {
     D_PRINTF("PM: Parsed data: %i / %i / %i\r\n", data.pm10_env, data.pm25_env, data.pm100_env);
 
     _data.pm10_env = data.pm10_env;
-    _data.pm25_env = data.pm25_env;
-    _data.pm100_env = data.pm100_env;
+    _data.pm25_env = data.pm25_env - data.pm10_env;
+    _data.pm100_env = data.pm100_env - data.pm25_env;
 
     return true;
 }

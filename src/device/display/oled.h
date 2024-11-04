@@ -63,9 +63,9 @@ void OledDisplay<Type, Buffer>::update(const SensorData &data) {
     if (data.state.pms != SensorState::NOT_READY) {
         _oled.print(data.pms.pm10_env);
         _oled.print(" - ");
-        _oled.print(data.pms.pm25_env - data.pms.pm10_env);
+        _oled.print(data.pms.pm25_env);
         _oled.print(" - ");
-        _oled.print(data.pms.pm100_env - data.pms.pm25_env);
+        _oled.print(data.pms.pm100_env);
     } else {
         _oled.print("N/A");
     }
