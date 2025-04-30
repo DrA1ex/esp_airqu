@@ -1,7 +1,7 @@
 #!/bin/bash
 
 OTA=${OTA=0}
-PLATFORM=${PLATFORM=esp8266}
+PLATFORM=${PLATFORM=esp32}
 
 set +v
 
