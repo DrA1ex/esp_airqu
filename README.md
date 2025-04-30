@@ -36,4 +36,5 @@ git clone https://github.com/DrA1ex/airqu-esp32.git
 cd airqu-esp32
 
 pio run -t upload
+./upload_fs.sh
 ```
