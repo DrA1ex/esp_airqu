@@ -25,6 +25,12 @@ export const Properties = [{
                 return ['Humidity', `${value.toFixed(1)} %`];
             }
         },
+        {
+            key: "sensor_data.tvoc", type: "label", kind: "Float32", cmd: PacketType.TVOC,
+            transform: (value) => {
+                return ['TVOC', `${value.toFixed(1)} ppb`];
+            }
+        },
         {key: "sensor_data.pms.pm10_env", type: "label", kind: "Uint16", cmd: PacketType.PM_10, transform: (value) => ['PM 1.0', value]},
         {key: "sensor_data.pms.pm25_env", type: "label", kind: "Uint16", cmd: PacketType.PM_25, transform: (value) => ['PM 2.5', value]},
         {key: "sensor_data.pms.pm100_env", type: "label", kind: "Uint16", cmd: PacketType.PM_100, transform: (value) => ['PM 10.0', value]},
@@ -59,6 +65,8 @@ export const Properties = [{
         {key: "sys_config.mqtt_password", title: "MQTT Password", type: "password", kind: "FixedString", cmd: PacketType.SYS_CONFIG_MQTT_PASSWORD, maxLength: 32},
 
         {type: "title", label: "Actions", extra: {m_top: true}},
-        {key: "apply_sys_config", type: "button", label: "Apply Settings"}
+        {key: "apply_sys_config", type: "button", label: "Apply Settings"},
+        {type: "separator"},
+        {key: "co2_calibrate", type: "button", label: "CO2 Calibrate"},
     ]
 }];

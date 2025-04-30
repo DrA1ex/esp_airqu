@@ -35,6 +35,7 @@ DECLARE_META(SensorDataMeta, AppMetaProperty,
     MEMBER(Parameter<uint32_t>, co2),
     MEMBER(Parameter<float>, temperature),
     MEMBER(Parameter<float>, humidity),
+    MEMBER(Parameter<float>, tvoc),
 
     SUB_TYPE(PmsDataMeta, pms)
 )
@@ -139,6 +140,11 @@ inline ConfigMetadata build_metadata(Config &config, SensorData &sensor_data) {
                 PacketType::HUMIDITY,
                 MQTT_OUT_TOPIC_HUMIDITY,
                 &sensor_data.humidity
+            },
+            .tvoc = {
+                PacketType::TVOC,
+                MQTT_OUT_TOPIC_TVOC,
+                &sensor_data.tvoc
             },
 
             .pms = {

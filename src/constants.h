@@ -41,6 +41,7 @@
 #define MQTT_OUT_TOPIC_CO2                      MQTT_OUT_PREFIX "/co2"
 #define MQTT_OUT_TOPIC_TEMPERATURE              MQTT_OUT_PREFIX "/temperature"
 #define MQTT_OUT_TOPIC_HUMIDITY                 MQTT_OUT_PREFIX "/humidity"
+#define MQTT_OUT_TOPIC_TVOC                     MQTT_OUT_PREFIX "/tvoc"
 #define MQTT_OUT_TOPIC_PM_10                    MQTT_OUT_PREFIX "/pm_10"
 #define MQTT_OUT_TOPIC_PM_25                    MQTT_OUT_PREFIX "/pm_25"
 #define MQTT_OUT_TOPIC_PM_100                   MQTT_OUT_PREFIX "/pm_100"

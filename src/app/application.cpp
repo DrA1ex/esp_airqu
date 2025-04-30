@@ -47,7 +47,9 @@ void Application::begin() {
 
     Wire.begin();
     _bme = std::make_unique<GyverBME280>();
-    _bme->begin(BME_ADDRESS);
+    if (!_bme->begin(BME_ADDRESS)) {
+        D_PRINTF("Failed to initialize BME280");
+    }
 
     _co2_uart = std::make_unique<HardwareSerial>(UART_CO2);
     _co2_uart->begin(9600, SERIAL_8N1, CO2_RX, CO2_TX);
@@ -59,6 +61,13 @@ void Application::begin() {
 
     _pms_device = std::make_unique<PmsDevice>(UART_PMS);
     _pms_device->begin(PMS_RX, PMS_TX);
+
+    _ens160_device = std::make_unique<SparkFun_ENS160>();
+    if (_ens160_device->begin()) {
+        _ens160_device->setOperatingMode(SFE_ENS160_STANDARD);
+    } else {
+        D_PRINTF("Failed to initialize Ens160");
+    }
 
     _setup();
 }
@@ -89,6 +98,7 @@ void Application::_setup() {
 
     ws_server->register_data_request((PacketType) SystemPacketTypeEnum::GET_CONFIG, _metadata->data.config);
     ws_server->register_command((PacketType) SystemPacketTypeEnum::RESTART, [this] { _bootstrap->restart(); });
+    ws_server->register_command(PacketType::CO2_CALIBRATE, [this] { _mhz19->calibrate(); });
 
     _bootstrap->timer().add_interval([this](auto) {
         if (config().power) _update_data();
@@ -131,20 +141,20 @@ void Application::_update_data() {
     if (_sensor_data.temperature != 0) {
         if (_sensor_data.state.humidity == SensorState::GOOD) {
             _sensor_data.state.temperature = (_sensor_data.temperature >= 20 && _sensor_data.temperature <= 22)
-                                                 ? SensorState::GOOD : SensorState::WARNING;
+                                             ? SensorState::GOOD : SensorState::WARNING;
         } else if (_sensor_data.state.humidity == SensorState::WARNING) {
             _sensor_data.state.temperature = (_sensor_data.temperature >= 18 && _sensor_data.temperature <= 24)
-                                                 ? SensorState::GOOD : SensorState::WARNING;
+                                             ? SensorState::GOOD : SensorState::WARNING;
         } else {
             _sensor_data.state.temperature = (_sensor_data.temperature >= 21 && _sensor_data.temperature <= 24)
-                                                 ? SensorState::GOOD : SensorState::WARNING;
+                                             ? SensorState::GOOD : SensorState::WARNING;
         }
     }
 
     D_PRINTF("Humidity: %.2f / %s\r\n", _sensor_data.humidity, __debug_enum_str(_sensor_data.state.humidity));
     D_PRINTF("Temperature: %.2f / %s\r\n", _sensor_data.temperature, __debug_enum_str(_sensor_data.state.temperature));
 
-    _sensor_data.co2 = _mhz19->getCO2(false);
+    _sensor_data.co2 = _mhz19->getCO2();
     if (_mhz19->errorCode == ERRORCODE::RESULT_OK) {
         if (_sensor_data.co2 <= 1000) _sensor_data.state.co2 = SensorState::GOOD;
         else if (_sensor_data.co2 <= 1500) _sensor_data.state.co2 = SensorState::WARNING;
@@ -168,6 +178,23 @@ void Application::_update_data() {
     }
 
     D_PRINTF("PMS State: %s\r\n", __debug_enum_str(_sensor_data.state.pms));
+
+    if (_ens160_device->checkDataStatus() && _ens160_device->getFlags() < 3) {
+        _sensor_data.tvoc = _ens160_device->getTVOC();
+
+        if (_sensor_data.tvoc <= 100) {
+            _sensor_data.state.tvoc = SensorState::GOOD;
+        } else if (_sensor_data.tvoc <= 500) {
+            _sensor_data.state.tvoc = SensorState::WARNING;
+        } else {
+            _sensor_data.state.tvoc = SensorState::CRITICAL;
+        }
+    } else {
+        _sensor_data.state.tvoc = SensorState::NOT_READY;
+    }
+
+    D_PRINTF("TVOC: %f (Flag: %u) / %s\r\n", _sensor_data.tvoc, _ens160_device->getFlags(),
+        __debug_enum_str(_sensor_data.state.tvoc));
 }
 
 void Application::_redraw_data() {
@@ -199,6 +226,10 @@ void Application::_send_notifications() {
         bus.notify_parameter_changed(this, _metadata->sensor_data.pms.pm10_env);
         bus.notify_parameter_changed(this, _metadata->sensor_data.pms.pm25_env);
         bus.notify_parameter_changed(this, _metadata->sensor_data.pms.pm100_env);
+    }
+
+    if (_sensor_data.state.tvoc != SensorState::NOT_READY) {
+        bus.notify_parameter_changed(this, _metadata->sensor_data.tvoc);
     }
 }
 

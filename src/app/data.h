@@ -21,6 +21,7 @@ struct SensorDataState {
     SensorState temperature = SensorState::NOT_READY;
     SensorState humidity = SensorState::NOT_READY;
     SensorState pms = SensorState::NOT_READY;
+    SensorState tvoc = SensorState::NOT_READY;
 };
 
 struct SensorData {
@@ -28,6 +29,7 @@ struct SensorData {
 
     float temperature;
     float humidity;
+    float tvoc;
 
     PmsData pms;
 

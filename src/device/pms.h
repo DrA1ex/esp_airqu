@@ -18,5 +18,5 @@ public:
 
     bool read();
 
-    inline const PmsData &data() const { return _data; };
+    const PmsData &data() const { return _data; };
 };

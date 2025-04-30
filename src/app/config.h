@@ -14,6 +14,7 @@ MAKE_ENUM(PacketType, uint8_t,
     CO2, 0x20,
     TEMPERATURE, 0x21,
     HUMIDITY, 0x22,
+    TVOC, 0x23,
 
     PM_10, 0x30,
     PM_25, 0x31,
@@ -36,6 +37,8 @@ MAKE_ENUM(PacketType, uint8_t,
     HARDWARE_FAN_ENABLED, 0x80,
 
     GET_SENSOR_DATA, 0xa0,
+
+    CO2_CALIBRATE, 0xb0,
 )
 
 typedef char ConfigString[CONFIG_STRING_SIZE];

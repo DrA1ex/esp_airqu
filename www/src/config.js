@@ -11,6 +11,7 @@ export const PacketType = {
     CO2: 0x20,
     TEMPERATURE: 0x21,
     HUMIDITY: 0x22,
+    TVOC: 0x23,
 
     PM_10: 0x30,
     PM_25: 0x31,
@@ -33,6 +34,8 @@ export const PacketType = {
     HARDWARE_FAN_ENABLED: 0x80,
 
     GET_SENSOR_DATA: 0xa0,
+
+    CO2_CALIBRATE: 0xb0,
 }
 
 const CfgStrLength = 32;
@@ -96,6 +99,7 @@ export class Config extends AppConfigBase {
 
             temperature: parser.readFloat32(),
             humidity: parser.readFloat32(),
+            tvoc: parser.readFloat32(),
 
             pms: {
                 pm10_env: parser.readUint16(),

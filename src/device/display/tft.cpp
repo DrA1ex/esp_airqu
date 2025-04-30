@@ -73,6 +73,14 @@ void TftDisplay::_draw_page(const SensorData &sensor_data) {
             break;
 
         case 3:
+            label = "TVOC";
+            state = sensor_data.state.tvoc;
+            if (state != SensorState::NOT_READY) {
+                value = convert_value(sensor_data.tvoc);
+            }
+            break;
+
+        case 4:
             label = "PM1.0";
             state = sensor_data.state.pms;
             if (state != SensorState::NOT_READY) {
@@ -80,7 +88,7 @@ void TftDisplay::_draw_page(const SensorData &sensor_data) {
             }
             break;
 
-        case 4:
+        case 5:
             label = "PM2.5";
             state = sensor_data.state.pms;
             if (state != SensorState::NOT_READY) {
@@ -88,7 +96,7 @@ void TftDisplay::_draw_page(const SensorData &sensor_data) {
             }
             break;
 
-        case 5:
+        case 6:
             label = "PM10";
             state = sensor_data.state.pms;
             if (state != SensorState::NOT_READY) {

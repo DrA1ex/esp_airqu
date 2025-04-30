@@ -2,6 +2,7 @@
 
 #include <GyverBME280.h>
 #include <MHZ19.h>
+#include <SparkFun_ENS160.h>
 
 #include "lib/bootstrap.h"
 
@@ -24,6 +25,7 @@ class Application {
     std::unique_ptr<MHZ19> _mhz19;
     std::unique_ptr<GyverBME280> _bme;
     std::unique_ptr<PmsDevice> _pms_device;
+    std::unique_ptr<SparkFun_ENS160> _ens160_device;
 
     SensorData _sensor_data{};
 

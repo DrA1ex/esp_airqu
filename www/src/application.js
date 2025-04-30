@@ -1,6 +1,6 @@
 import {ApplicationBase, SystemPacketType} from "./lib/index.js";
 
-import {Config} from "./config.js";
+import {Config, PacketType} from "./config.js";
 import {Properties} from "./props.js";
 
 export class Application extends ApplicationBase {
@@ -18,6 +18,7 @@ export class Application extends ApplicationBase {
         await super.begin(root);
 
         this.propertyMeta["apply_sys_config"].control.setOnClick(this.applySysConfig.bind(this));
+        this.propertyMeta["co2_calibrate"].control.setOnClick(() => this.ws.request(PacketType.CO2_CALIBRATE));
     }
 
     async applySysConfig(sender) {
