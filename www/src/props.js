@@ -28,7 +28,7 @@ export const Properties = [{
         {
             key: "sensor_data.tvoc", type: "label", kind: "Float32", cmd: PacketType.TVOC,
             transform: (value) => {
-                return ['TVOC', `${value.toFixed(1)} ppb`];
+                return ['TVOC', `${value.toFixed(0)} ppb`];
             }
         },
         {key: "sensor_data.pms.pm10_env", type: "label", kind: "Uint16", cmd: PacketType.PM_10, transform: (value) => ['PM 1.0', value]},

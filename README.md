@@ -15,16 +15,17 @@ Project: [EasyEDA Pro](https://github.com/user-attachments/files/16648917/ProPro
 
 ## Hardware:
 
-| Type             | Hardware        | Interface     |
-|------------------|-----------------|---------------|
-| Controller       | ESP32 38P       |               |
-| Particle Matter  | PMS5003 or other|   UART        |
-| CO2              | MH-Z19B         |   UART        |
-| Temp. / Humidity | BME280 3.3V     |   I2C         |
-| OLED Display     | Any SSD1306     |   I2C         |
-| TFT Display      | Any ST7735      |   SPI         |
-| Buttons          | Any             |               |
-| Fan              | Any 12V 40mm    |               |
+| Type             | Hardware         | Interface     |
+|------------------|------------------|---------------|
+| Controller       | ESP32 38P        |               |
+| Particle Matter  | PMS5003 or other |   UART        |
+| CO2              | MH-Z19B          |   UART        |
+| Temp. / Humidity | BME280 3.3V      |   I2C         |
+| TVOC             | ENS160           |   I2C         |
+| OLED Display     | Any SSD1306      |   I2C         |
+| TFT Display      | Any ST7735       |   SPI         |
+| Buttons          | Any              |               |
+| Fan              | Any 12V 40mm     |               |
 
 ## Installation
 

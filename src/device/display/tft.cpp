@@ -76,7 +76,7 @@ void TftDisplay::_draw_page(const SensorData &sensor_data) {
             label = "TVOC";
             state = sensor_data.state.tvoc;
             if (state != SensorState::NOT_READY) {
-                value = convert_value(sensor_data.tvoc);
+                value = convert_value(sensor_data.tvoc, 0);
             }
             break;
 
